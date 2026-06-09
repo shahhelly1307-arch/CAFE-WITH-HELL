@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="The Canopy Lounge — India's premier 3D treehouse cafe. Explore our cedar treehouse, browse the menu in ₹, and reserve your table.">
+    <title>The Canopy Lounge | 3D Treehouse Cafe</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700;800&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <div id="loading-screen">
+        <div class="loader-content">
+            <div class="loader-tree">🌿</div>
+            <h2>The Canopy Lounge</h2>
+            <p>Loading your 3D treehouse experience…</p>
+            <div class="loader-bar"><div class="loader-progress" id="loader-progress"></div></div>
+        </div>
+    </div>
+
+    <canvas id="webgl-canvas"></canvas>
+
+    <div id="scene-hint" class="scene-hint hidden">
+        <span class="hint-icon">↻</span>
+        <span>Scroll to explore the treehouse</span>
+    </div>
+
+    <header id="main-header">
+        <div class="header-container">
+            <a href="#hero-section" class="logo">
+                <span class="logo-icon">🌿</span> The Canopy Lounge
+            </a>
+            <button id="nav-toggle" class="nav-toggle" aria-label="Toggle navigation">
+                <span></span><span></span><span></span>
+            </button>
+            <nav id="nav-menu">
+                <a href="#hero-section" class="nav-link active">Home</a>
+                <a href="#about-section" class="nav-link">About</a>
+                <a href="#menu-section" class="nav-link">Menu</a>
+                <a href="#gallery-section" class="nav-link">Gallery</a>
+                <a href="#reserve-section" class="nav-link">Reserve</a>
+                <a href="#contact-section" class="nav-link">Contact</a>
+            </nav>
+            <div class="header-actions">
+                <button id="theme-toggle" class="glass-btn icon-btn" aria-label="Toggle dark mode">🌙</button>
+                <button id="explore-3d-btn" class="glass-btn explore-btn">Explore 3D</button>
+                <button id="sound-toggle" aria-label="Toggle ambient sounds" class="glass-btn header-sound-btn">
+                    <span class="visualizer-bars"><span class="bar"></span><span class="bar"></span><span class="bar"></span><span class="bar"></span></span>
+                    <span id="sound-status-text" class="sound-label">Sound</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <main id="scroll-wrapper">
+        <!-- 1. HOMEPAGE -->
+        <section id="hero-section" class="scroll-section active">
+            <div class="content-panel hero-content">
+                <span class="tagline">India's First 3D Treehouse Cafe</span>
+                <h1 class="main-title">Dine Above the Forest</h1>
+                <p class="subtitle">Scroll to walk through our cedar treehouse — from the forest floor to the canopy deck. Order from our full menu in ₹, pick a table, and let our waiter serve you.</p>
+                <div class="hero-stats">
+                    <div class="stat"><strong>40ft</strong><span>Above ground</span></div>
+                    <div class="stat"><strong>50+</strong><span>Menu items</span></div>
+                    <div class="stat"><strong>₹99</strong><span>Starting price</span></div>
+                </div>
+                <div class="hero-cta">
+                    <a href="#menu-section" class="cta-btn primary">View Menu</a>
+                    <a href="#reserve-section" class="cta-btn secondary">Book a Table</a>
+                    <button type="button" id="explore-3d-hero" class="cta-btn outline">Free Explore Mode</button>
+                </div>
+                <div class="scroll-indicator">
+                    <span class="mouse-icon"><span class="wheel"></span></span>
+                    <span>Scroll to enter the treehouse</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. ABOUT US -->
+        <section id="about-section" class="scroll-section">
+            <div class="content-panel left-panel glass-card wide-card">
+                <span class="tagline">About Us</span>
+                <h2>Our Story in the Treetops</h2>
+                <p>Founded in 2024, The Canopy Lounge is a cedar-plank treehouse cafe wrapped around a living oak, 40 feet above the Western Ghats. We built every beam by hand — no nails through the bark — so the tree keeps growing while you dine.</p>
+                <div class="about-grid">
+                    <div class="about-card">
+                        <h4>🌲 Environment</h4>
+                        <p>Floor-to-ceiling windows, forest mist, and birdsong at sunrise. A calm escape from the city.</p>
+                    </div>
+                    <div class="about-card">
+                        <h4>☕ Quality</h4>
+                        <p>Single-origin coffee, farm-fresh ingredients, and recipes inspired by Indian and global flavours.</p>
+                    </div>
+                    <div class="about-card">
+                        <h4>🍽️ Services</h4>
+                        <p>Dine-in, deck seating, private events, takeaway, and table-side service from our canopy waiter.</p>
+                    </div>
+                    <div class="about-card">
+                        <h4>✨ Specialties</h4>
+                        <p>Filter kaapi, masala chai, wood-fired wraps, and our famous Sunset Deck Platter for two.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 3. MENU -->
+        <section id="menu-section" class="scroll-section">
+            <div class="content-panel right-panel glass-card menu-panel wide-card">
+                <span class="tagline">Our Menu</span>
+                <h2>Forest Kitchen — Prices in ₹</h2>
+                <div id="order-banner" class="order-banner hidden">
+                    <span class="order-label">Your order</span>
+                    <span id="order-item-name">—</span>
+                    <span class="order-hint">Select a table after scrolling — waiter will deliver this item</span>
+                </div>
+                <div class="search-container">
+                    <input type="text" id="menu-search" placeholder="Search coffee, food, desserts…">
+                </div>
+                <div class="menu-tabs">
+                    <button class="tab-btn active" data-tab="coffee">Coffee</button>
+                    <button class="tab-btn" data-tab="fastfood">Fast Food</button>
+                    <button class="tab-btn" data-tab="desserts">Desserts</button>
+                    <button class="tab-btn" data-tab="beverages">Beverages</button>
+                    <button class="tab-btn" data-tab="specials">Specials</button>
+                </div>
+                <div class="menu-list-container">
+                    <div class="tab-content active" id="tab-coffee"><div class="menu-grid" id="coffee-items"></div></div>
+                    <div class="tab-content" id="tab-fastfood"><div class="menu-grid" id="fastfood-items"></div></div>
+                    <div class="tab-content" id="tab-desserts"><div class="menu-grid" id="desserts-items"></div></div>
+                    <div class="tab-content" id="tab-beverages"><div class="menu-grid" id="beverages-items"></div></div>
+                    <div class="tab-content" id="tab-specials"><div class="menu-grid" id="specials-items"></div></div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. GALLERY -->
+        <section id="gallery-section" class="scroll-section">
+            <div class="content-panel center-panel glass-card wide-card">
+                <span class="tagline">Gallery</span>
+                <h2>Life at the Canopy</h2>
+                <p class="section-intro">A glimpse of our treehouse cafe, food, and forest views.</p>
+                <div id="gallery-grid" class="gallery-grid"></div>
+            </div>
+        </section>
+
+        <!-- 5. RESERVE + 3D TABLE BOOKING -->
+        <section id="reserve-section" class="scroll-section">
+            <div class="content-panel left-panel glass-card wide-card">
+                <span class="tagline">Reservations</span>
+                <h2>Book Your Tree Deck</h2>
+                <p class="booking-intro">Scroll through the treehouse to discover tables, or click <strong>Explore 3D</strong> to freely orbit the full structure. Click a glowing green table to reserve.</p>
+                <div class="glass-subcard hours-card">
+                    <p><strong>Hours:</strong> 7:00 AM – 10:00 PM daily</p>
+                    <p><strong>Location:</strong> Munnar Canopy Road, Kerala, India</p>
+                    <p><strong>Phone:</strong> +91 98765 43210</p>
+                </div>
+                <div id="table-info-box" class="glass-subcard">
+                    <h3 id="info-table-name">Choose a Table</h3>
+                    <p id="info-table-details">Walk the 3D scene and click a table lamp to reserve instantly.</p>
+                </div>
+                <input type="hidden" id="selected-table-id">
+                <div id="booking-success" class="hidden glass-subcard success-card">
+                    <h3>✓ Table Reserved!</h3>
+                    <p id="success-message"></p>
+                    <button type="button" id="book-another-btn" class="submit-btn gold-btn">Book Another</button>
+                </div>
+            </div>
+        </section>
+
+        <!-- TESTIMONIALS -->
+        <section id="testimonials-section" class="scroll-section">
+            <div class="content-panel glass-card wide-card">
+                <span class="tagline">Reviews</span>
+                <h2>What Guests Say</h2>
+                <div class="testimonials-grid">
+                    <blockquote class="testimonial-card">
+                        <p>"The 3D walkthrough is magical — felt like I was really climbing into a treehouse. Best cappuccino in Kerala!"</p>
+                        <cite>— Priya M., Bangalore</cite>
+                    </blockquote>
+                    <blockquote class="testimonial-card">
+                        <p>"Reserved the deck table, ordered the Sunset Platter, and the waiter brought it right to us. Unforgettable experience."</p>
+                        <cite>— Arjun K., Mumbai</cite>
+                    </blockquote>
+                    <blockquote class="testimonial-card">
+                        <p>"Perfect for a weekend getaway. The masala chai and gulab jamun cheesecake are must-tries. Prices are very fair."</p>
+                        <cite>— Sneha R., Kochi</cite>
+                    </blockquote>
+                </div>
+            </div>
+        </section>
+
+        <!-- 6. CONTACT FORM -->
+        <section id="contact-section" class="scroll-section">
+            <div class="content-panel right-panel glass-card">
+                <span class="tagline">Contact Us</span>
+                <h2>Reservation & Enquiry</h2>
+                <form id="contact-form" class="contact-form" novalidate>
+                    <div class="form-group">
+                        <label for="contact-name">Full Name *</label>
+                        <input type="text" id="contact-name" required placeholder="Your name">
+                        <span class="field-error" id="contact-name-error"></span>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact-email">Email *</label>
+                            <input type="email" id="contact-email" required placeholder="you@email.com">
+                            <span class="field-error" id="contact-email-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-phone">Phone *</label>
+                            <input type="tel" id="contact-phone" required placeholder="+91 98765 43210">
+                            <span class="field-error" id="contact-phone-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="contact-date">Date & Time *</label>
+                            <input type="datetime-local" id="contact-date" required>
+                            <span class="field-error" id="contact-date-error"></span>
+                        </div>
+                        <div class="form-group">
+                            <label for="contact-guests">Guests *</label>
+                            <select id="contact-guests" required>
+                                <option value="">Select</option>
+                                <option value="1">1 Guest</option>
+                                <option value="2">2 Guests</option>
+                                <option value="3">3 Guests</option>
+                                <option value="4">4 Guests</option>
+                                <option value="5">5+ Guests</option>
+                            </select>
+                            <span class="field-error" id="contact-guests-error"></span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="contact-message">Special Request</label>
+                        <textarea id="contact-message" rows="3" placeholder="Dietary needs, celebration, seating preference…"></textarea>
+                    </div>
+                    <button type="submit" class="submit-btn gold-btn">Send Reservation Request</button>
+                </form>
+                <div id="contact-success" class="hidden glass-subcard success-card">
+                    <h3>Message Sent!</h3>
+                    <p id="contact-success-msg"></p>
+                </div>
+            </div>
+        </section>
+
+        <footer id="main-footer">
+            <div class="footer-grid">
+                <div class="footer-brand">
+                    <strong>🌿 The Canopy Lounge</strong>
+                    <p>Premium treehouse dining in the heart of the forest.</p>
+                </div>
+                <div class="footer-links-col">
+                    <h4>Quick Links</h4>
+                    <a href="#menu-section">Menu</a>
+                    <a href="#gallery-section">Gallery</a>
+                    <a href="#reserve-section">Reservations</a>
+                    <a href="#contact-section">Contact</a>
+                </div>
+                <div class="footer-social">
+                    <h4>Follow Us</h4>
+                    <div class="social-icons">
+                        <a href="#" aria-label="Instagram">Instagram</a>
+                        <a href="#" aria-label="Facebook">Facebook</a>
+                        <a href="mailto:hello@canopylounge.in">Email</a>
+                        <a href="tel:+919876543210">Call</a>
+                    </div>
+                </div>
+            </div>
+            <p class="footer-copy">© 2026 The Canopy Lounge, Kerala, India. All rights reserved. | Task 2 — Cafe Website Project</p>
+        </footer>
+    </main>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/CopyShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/shaders/LuminosityHighPassShader.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/EffectComposer.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/RenderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/ShaderPass.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/postprocessing/UnrealBloomPass.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/ScrollTrigger.min.js"></script>
+
+    <script src="./audio.js"></script>
+    <script src="./menu-data.js"></script>
+    <script src="./characters.js"></script>
+    <script src="./waiter.js"></script>
+    <script src="./scene.js"></script>
+    <script src="./booking.js"></script>
+    <script src="./animations.js"></script>
+    <script src="./app.js"></script>
+    <script>
+        document.getElementById('explore-3d-hero')?.addEventListener('click', () => {
+            document.getElementById('explore-3d-btn')?.click();
+        });
+    </script>
+</body>
+</html>
